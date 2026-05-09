@@ -3,75 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#0f0f1a">
 <title>俯卧撑打卡</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;color:#333;padding:16px;padding-bottom:100px;max-width:480px;margin:0 auto}
-.header{text-align:center;margin-bottom:20px}
-.header h1{font-size:24px;color:#333;font-weight:700}
-.input-row{display:flex;gap:10px;margin-bottom:16px}
-.input-row input{flex:1;padding:12px 16px;border:1px solid #e0e0e0;border-radius:8px;font-size:18px;text-align:center;outline:none;background:#fff;color:#333}
-.input-row input:focus{border-color:#1890ff}
-.input-row button{padding:12px 24px;border-radius:8px;border:none;background:#1890ff;color:#fff;font-size:16px;font-weight:600;cursor:pointer;white-space:nowrap}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f0f1a;color:#e0e0e0;padding:16px;padding-bottom:100px;max-width:480px;margin:0 auto}
+.header{text-align:center;margin-bottom:20px;background:linear-gradient(135deg,#1a1a2e,#16213e);padding:16px;border-radius:12px;border:1px solid #333}
+.header h1{font-size:20px;color:#00d4aa;font-weight:700}
+.header .count{font-size:42px;color:#00d4aa;font-weight:700;margin-top:4px}
+.input-row{display:flex;gap:10px;margin-bottom:12px}
+.input-row input{flex:1;padding:12px 16px;border:1px solid #333;border-radius:10px;font-size:18px;text-align:center;outline:none;background:#1a1a2e;color:#e0e0e0}
+.input-row input:focus{border-color:#00d4aa}
+.input-row button{padding:12px 24px;border-radius:10px;border:none;background:#00d4aa;color:#000;font-size:16px;font-weight:700;cursor:pointer;white-space:nowrap}
 .input-row button:active{opacity:0.8}
-.quick-add{display:flex;gap:8px;margin-bottom:20px}
-.quick-add button{flex:1;padding:10px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;color:#1890ff;font-size:15px;font-weight:600;cursor:pointer}
-.quick-add button:active{background:#e6f0ff}
-.stats{display:flex;gap:8px;margin-bottom:20px}
-.stat-card{flex:1;padding:14px;border-radius:8px;background:#fff;border:1px solid #e0e0e0;text-align:center}
-.stat-card .num{font-size:26px;font-weight:700;color:#333;line-height:1.3}
-.stat-card .lbl{font-size:13px;color:#888;margin-top:2px}
-.data-list{background:#fff;border-radius:8px;border:1px solid #e0e0e0;margin-bottom:20px;overflow:hidden}
-.list-header{display:flex;padding:10px 14px;border-bottom:1px solid #e0e0e0;font-size:13px;color:#888;font-weight:600}
+.quick-add{display:flex;gap:6px;margin-bottom:16px}
+.quick-add button{flex:1;padding:8px;border-radius:8px;border:1px solid #333;background:#1a1a2e;color:#00d4aa;font-size:14px;font-weight:600;cursor:pointer}
+.quick-add button:active{background:#0f3460}
+.stats{display:flex;gap:8px;margin-bottom:16px}
+.stat-card{flex:1;padding:12px;border-radius:10px;background:linear-gradient(135deg,#1a1a2e,#0f3460);border:1px solid #333;text-align:center}
+.stat-card .num{font-size:24px;font-weight:700;color:#00d4aa;line-height:1.3}
+.stat-card .lbl{font-size:12px;color:#888;margin-top:2px}
+
+.filter-bar{display:flex;gap:10px;margin-bottom:12px;align-items:center}
+.filter-bar select{flex:1;padding:8px 10px;border:1px solid #333;border-radius:8px;background:#1a1a2e;color:#e0e0e0;font-size:14px;outline:none}
+.filter-bar select:focus{border-color:#00d4aa}
+
+.chart-section{margin-bottom:16px}
+.chart-section h3{font-size:14px;color:#aaa;margin-bottom:8px;font-weight:600}
+.chart-wrap{background:#1a1a2e;border-radius:10px;border:1px solid #333;padding:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.chart{display:flex;align-items:flex-end;gap:3px;min-height:100px;padding-top:8px}
+.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;min-width:22px}
+.bar{width:100%;max-width:20px;background:linear-gradient(to top,#00d4aa,#00e6b3);border-radius:2px 2px 0 0;min-height:1px;transition:height 0.3s}
+.bar-label{font-size:9px;color:#666;margin-top:3px;white-space:nowrap}
+.bar-val{font-size:9px;color:#aaa;font-weight:600;margin-bottom:2px}
+
+.data-list{background:#1a1a2e;border-radius:10px;border:1px solid #333;margin-bottom:16px;overflow:hidden}
+.list-header{display:flex;padding:10px 14px;border-bottom:1px solid #222;font-size:12px;color:#666;font-weight:600}
 .list-header .col-date{flex:1}
 .list-header .col-val{text-align:right}
-.list-row{display:flex;padding:10px 14px;border-bottom:1px solid #f0f0f0;align-items:center}
+.list-row{display:flex;padding:10px 14px;border-bottom:1px solid #1a1a2e;align-items:center}
 .list-row:last-child{border-bottom:none}
-.list-row .date{flex:1;font-size:14px;color:#333}
-.list-row .val{font-size:15px;font-weight:600;color:#1890ff}
-.list-row .del{color:#ff4d4f;font-size:16px;cursor:pointer;padding:2px 8px;border-radius:4px;margin-left:8px}
-.list-row .del:active{background:#fff1f0}
-.empty{text-align:center;padding:30px;color:#bbb;font-size:14px}
+.list-row .date{flex:1;font-size:13px;color:#ccc}
+.list-row .val{font-size:14px;font-weight:600;color:#00d4aa}
+.list-row .del{color:#ff4444;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:4px;margin-left:8px}
+.list-row .del:active{background:#2a1a1a}
+.empty{text-align:center;padding:24px;color:#444;font-size:13px}
 
-.chart-section{margin-bottom:20px}
-.chart-section h3{font-size:15px;color:#333;margin-bottom:10px;font-weight:600}
-.chart-wrap{background:#fff;border-radius:8px;border:1px solid #e0e0e0;padding:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.chart{display:flex;align-items:flex-end;gap:4px;min-height:120px;padding-top:10px;position:relative}
-.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;min-width:28px}
-.bar{width:100%;max-width:28px;background:#1890ff;border-radius:3px 3px 0 0;min-height:2px;transition:height 0.3s}
-.bar-label{font-size:10px;color:#888;margin-top:4px;white-space:nowrap;transform:rotate(-45deg);transform-origin:left top}
-.bar-val{font-size:10px;color:#333;font-weight:600;margin-bottom:2px}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;border-top:1px solid #333;padding:10px 16px;display:flex;gap:8px;max-width:480px;margin:0 auto}
+.bottom-bar button{flex:1;padding:10px;border-radius:8px;border:1px solid #333;background:#0f0f1a;color:#888;font-size:12px;cursor:pointer}
+.bottom-bar button.active{background:#00d4aa22;border-color:#00d4aa;color:#00d4aa;font-weight:600}
 
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e0e0e0;padding:10px 16px;display:flex;gap:8px;max-width:480px;margin:0 auto}
-.bottom-bar button{flex:1;padding:10px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;color:#888;font-size:13px;cursor:pointer}
-.bottom-bar button.active{background:#e6f0ff;border-color:#1890ff;color:#1890ff;font-weight:600}
-
-.filter-bar{display:flex;gap:10px;margin-bottom:16px;align-items:center}
-.filter-bar select{flex:1;padding:8px 10px;border:1px solid #e0e0e0;border-radius:6px;background:#fff;font-size:14px;color:#333;outline:none}
-.filter-bar .query-btn{padding:8px 16px;border-radius:6px;border:none;background:#1890ff;color:#fff;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
-
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:100;justify-content:center;align-items:center}
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:100;justify-content:center;align-items:center}
 .modal.show{display:flex}
-.modal-box{background:#fff;border-radius:12px;padding:24px;width:88%;max-width:340px}
-.modal-box h3{color:#333;margin-bottom:16px;font-size:16px}
-.modal-box input{width:100%;padding:12px;border-radius:8px;border:1px solid #e0e0e0;font-size:16px;text-align:center;outline:none;margin-bottom:12px;color:#333}
-.modal-box input:focus{border-color:#1890ff}
+.modal-box{background:#1a1a2e;border-radius:12px;padding:24px;width:88%;max-width:340px;border:1px solid #333}
+.modal-box h3{color:#00d4aa;margin-bottom:16px;font-size:16px}
+.modal-box input{width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#0f0f1a;color:#e0e0e0;font-size:16px;text-align:center;outline:none;margin-bottom:12px}
+.modal-box input:focus{border-color:#00d4aa}
 .modal-box .btns{display:flex;gap:10px}
 .modal-box .btns button{flex:1;padding:12px;border-radius:8px;border:none;font-size:15px;font-weight:600;cursor:pointer}
-.modal-box .btns .ok{background:#1890ff;color:#fff}
-.modal-box .btns .cancel{background:#f0f0f0;color:#888}
+.modal-box .btns .ok{background:#00d4aa;color:#000}
+.modal-box .btns .cancel{background:#333;color:#888}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>💪 今天完成</h1>
+  <div style="font-size:13px;color:#888">💪 今天完成</div>
+  <div class="count" id="todayCount">0</div>
 </div>
 
 <div class="input-row">
   <input type="number" id="inputNum" placeholder="个数" min="1" max="999">
-  <button id="addBtn">＋添加</button>
+  <button id="addBtn">+ 添加</button>
 </div>
 
 <div class="quick-add">
@@ -87,6 +90,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div class="stat-card"><div class="num" id="totalAll">0</div><div class="lbl">总计</div></div>
 </div>
 
+<div class="filter-bar">
+  <select id="monthSelect"></select>
+  <select id="yearSelect"></select>
+</div>
+
+<div class="chart-section">
+  <h3>📊 每日俯卧撑</h3>
+  <div class="chart-wrap">
+    <div class="chart" id="monthChart"></div>
+  </div>
+</div>
+
+<div class="chart-section">
+  <h3>📊 每月俯卧撑</h3>
+  <div class="chart-wrap">
+    <div class="chart" id="yearChart"></div>
+  </div>
+</div>
+
 <div class="data-list">
   <div class="list-header">
     <span class="col-date">日期</span>
@@ -95,32 +117,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   <div id="listBody"></div>
 </div>
 
-<div class="filter-bar">
-  <select id="monthSelect"></select>
-  <select id="yearSelect"></select>
-  <button class="query-btn" id="queryBtn">查询</button>
-</div>
-
-<!-- 月柱状图 -->
-<div class="chart-section">
-  <h3>📊 每月俯卧撑</h3>
-  <div class="chart-wrap">
-    <div class="chart" id="monthChart"></div>
-  </div>
-</div>
-
-<!-- 年柱状图 -->
-<div class="chart-section">
-  <h3>📊 年度俯卧撑</h3>
-  <div class="chart-wrap">
-    <div class="chart" id="yearChart"></div>
-  </div>
-</div>
-
 <div class="bottom-bar">
   <button id="tabToday" class="active">📅 今日</button>
   <button id="tabWeek">📊 本周</button>
-  <button id="tabMonth">📈 本月</button>
+  <button id="tabMonth" class="active">📈 本月</button>
   <button id="setGoalBtn">🎯 目标</button>
 </div>
 
@@ -136,25 +136,68 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 </div>
 
 <script>
-const STORAGE_KEY='pushup_data', GOAL_KEY='pushup_goal';
+const STORAGE_KEY='pushup_data',GOAL_KEY='pushup_goal';
 const today=()=>new Date().toISOString().slice(0,10);
 function load(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{}}catch{return{}}}
 function save(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d))}
 function getGoal(){return parseInt(localStorage.getItem(GOAL_KEY))||50}
 function setGoal(n){localStorage.setItem(GOAL_KEY,n)}
-
-function getWeekRange(){const d=new Date(),day=d.getDay(),diff=day===0?6:day-1;const mon=new Date(d);mon.setDate(d.getDate()-diff);const sun=new Date(mon);sun.setDate(mon.getDate()+6);return{start:mon.toISOString().slice(0,10),end:sun.toISOString().slice(0,10)}}
-function getMonthRange(){const d=new Date();return{start:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`,end:new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().slice(0,10)}}
-function sumInRange(data,start,end){let t=0;for(const[date,c]of Object.entries(data)){if(date>=start&&date<=end)t+=c}return t}
 function pad2(n){return String(n).padStart(2,'0')}
+function getWeekRange(){const d=new Date(),day=d.getDay(),diff=day===0?6:day-1;const mon=new Date(d);mon.setDate(d.getDate()-diff);const sun=new Date(mon);sun.setDate(mon.getDate()+6);return{start:mon.toISOString().slice(0,10),end:sun.toISOString().slice(0,10)}}
+function getMonthRange(){const d=new Date();return{start:`${d.getFullYear()}-${pad2(d.getMonth()+1)}-01`,end:new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().slice(0,10)}}
+function sumInRange(data,start,end){let t=0;for(const[date,c]of Object.entries(data)){if(date>=start&&date<=end)t+=c}return t}
 
-function renderList(filter){
+// 月选择器
+const monthSel=document.getElementById('monthSelect'),yearSel=document.getElementById('yearSelect')
+const now=new Date()
+for(let m=1;m<=12;m++){const o=document.createElement('option');o.value=m;o.textContent=m+'月';monthSel.appendChild(o)}
+monthSel.value=now.getMonth()+1
+for(let y=now.getFullYear();y>=2020;y--){const o=document.createElement('option');o.value=y;o.textContent=y+'年';yearSel.appendChild(o)}
+yearSel.value=now.getFullYear()
+
+function renderMonthChart(y,m){
+  const data=load()
+  const days=new Date(y,m,0).getDate()
+  const daily=[]
+  for(let d=1;d<=days;d++){
+    const key=`${y}-${pad2(m)}-${pad2(d)}`
+    daily.push(data[key]||0)
+  }
+  const max=Math.max(...daily,1)
+  const chart=document.getElementById('monthChart')
+  chart.innerHTML=daily.map((v,i)=>{
+    const h=Math.max(1,(v/max)*100)
+    return `<div class="bar-group"><div class="bar-val">${v||''}</div><div class="bar" style="height:${h}px"></div><div class="bar-label">${i+1}日</div></div>`
+  }).join('')
+}
+
+function renderYearChart(y){
+  const data=load()
+  const monthly=[]
+  for(let m=1;m<=12;m++){
+    let total=0
+    const days=new Date(y,m,0).getDate()
+    for(let d=1;d<=days;d++){
+      const v=data[`${y}-${pad2(m)}-${pad2(d)}`]
+      if(v)total+=v
+    }
+    monthly.push(total)
+  }
+  const max=Math.max(...monthly,1)
+  const chart=document.getElementById('yearChart')
+  const labels=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
+  chart.innerHTML=monthly.map((v,i)=>{
+    const h=Math.max(1,(v/max)*100)
+    return `<div class="bar-group"><div class="bar-val">${v||''}</div><div class="bar" style="height:${h}px"></div><div class="bar-label">${labels[i]}</div></div>`
+  }).join('')
+}
+
+function renderList(tab){
   const data=load(),td=today()
   let entries=Object.entries(data).sort((a,b)=>b[0].localeCompare(a[0]))
-  if(filter==='today') entries=entries.filter(([d])=>d===td)
-  else if(filter==='week'){const r=getWeekRange();entries=entries.filter(([d])=>d>=r.start&&d<=r.end)}
-  else if(filter==='month'){const r=getMonthRange();entries=entries.filter(([d])=>d>=r.start&&d<=r.end)}
-  
+  if(tab==='today')entries=entries.filter(([d])=>d===td)
+  else if(tab==='week'){const r=getWeekRange();entries=entries.filter(([d])=>d>=r.start&&d<=r.end)}
+  else if(tab==='month'){const r=getMonthRange();entries=entries.filter(([d])=>d>=r.start&&d<=r.end)}
   const body=document.getElementById('listBody')
   if(!entries.length){body.innerHTML='<div class="empty">暂无记录</div>';return}
   body.innerHTML=entries.slice(0,31).map(([date,count])=>{
@@ -165,113 +208,57 @@ function renderList(filter){
   document.querySelectorAll('.del').forEach(el=>{el.onclick=function(){const d=load();delete d[this.dataset.date];save(d);renderAll()}})
 }
 
-function renderStats(){
+function renderAll(){
   const data=load(),td=today()
+  const goal=getGoal()
   const todayVal=data[td]||0
-  document.querySelector('.header h1').textContent=`💪 今天完成  ${todayVal}个`
+  document.getElementById('todayCount').textContent=todayVal+(todayVal>=goal?' ✅':'')
+  
   const wr=getWeekRange(),mr=getMonthRange()
   document.getElementById('weekTotal').textContent=sumInRange(data,wr.start,wr.end)
   document.getElementById('monthTotal').textContent=sumInRange(data,mr.start,mr.end)
   document.getElementById('totalAll').textContent=Object.values(data).reduce((a,b)=>a+b,0)
-}
-
-function renderMonthChart(year,month){
-  const data=load()
-  const daysInMonth=new Date(year,month,0).getDate()
-  const daily=[]
-  for(let d=1;d<=daysInMonth;d++){
-    const dateStr=`${year}-${pad2(month)}-${pad2(d)}`
-    daily.push(data[dateStr]||0)
-  }
-  const max=Math.max(...daily,1)
-  const chart=document.getElementById('monthChart')
-  chart.innerHTML=daily.map((v,i)=>{
-    const h=Math.max(2,(v/max)*100)
-    return `<div class="bar-group"><div class="bar-val">${v||''}</div><div class="bar" style="height:${h}px"></div><div class="bar-label">${i+1}日</div></div>`
-  }).join('')
-}
-
-function renderYearChart(year){
-  const data=load()
-  const monthly=[]
-  for(let m=1;m<=12;m++){
-    let total=0
-    const daysInMonth=new Date(year,m,0).getDate()
-    for(let d=1;d<=daysInMonth;d++){
-      const v=data[`${year}-${pad2(m)}-${pad2(d)}`]
-      if(v)total+=v
-    }
-    monthly.push(total)
-  }
-  const max=Math.max(...monthly,1)
-  const chart=document.getElementById('yearChart')
-  chart.innerHTML=monthly.map((v,i)=>{
-    const h=Math.max(2,(v/max)*100)
-    const labels=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月']
-    return `<div class="bar-group"><div class="bar-val">${v||''}</div><div class="bar" style="height:${h}px"></div><div class="bar-label">${labels[i]}</div></div>`
-  }).join('')
-}
-
-function renderAll(){
-  const data=load()
-  renderStats()
+  
+  const sy=parseInt(yearSel.value),sm=parseInt(monthSel.value)
+  renderMonthChart(sy,sm)
+  renderYearChart(sy)
   renderList(currentTab)
-  
-  // 选择器当前值
-  const ms=document.getElementById('monthSelect'),ys=document.getElementById('yearSelect')
-  const selYear=parseInt(ys.value)||new Date().getFullYear()
-  const selMonth=parseInt(ms.value)||new Date().getMonth()+1
-  renderMonthChart(selYear,selMonth)
-  renderYearChart(selYear)
 }
 
-// 初始化选择器
-function initSelectors(){
-  const ms=document.getElementById('monthSelect'),ys=document.getElementById('yearSelect')
-  ms.innerHTML=''
-  for(let m=1;m<=12;m++){const o=document.createElement('option');o.value=m;o.textContent=m+'月';ms.appendChild(o)}
-  ms.value=new Date().getMonth()+1
-  
-  const cy=new Date().getFullYear()
-  ys.innerHTML=''
-  for(let y=cy;y>=cy-5;y--){const o=document.createElement('option');o.value=y;o.textContent=y+'年';ys.appendChild(o)}
-  ys.value=cy
-}
+// 选择变化自动更新图表
+monthSel.onchange=()=>{const y=parseInt(yearSel.value),m=parseInt(monthSel.value);renderMonthChart(y,m)}
+yearSel.onchange=()=>{const y=parseInt(yearSel.value);renderYearChart(y);const m=parseInt(monthSel.value);renderMonthChart(y,m)}
 
-// 事件绑定
 document.getElementById('addBtn').onclick=()=>{
   const n=parseInt(document.getElementById('inputNum').value)
   if(!n||n<1)return
   const data=load(),td=today()
-  data[td]=(data[td]||0)+n
-  save(data)
-  document.getElementById('inputNum').value=''
-  renderAll()
+  data[td]=(data[td]||0)+n;save(data)
+  document.getElementById('inputNum').value='';renderAll()
 }
 document.getElementById('inputNum').onkeydown=e=>{if(e.key==='Enter')document.getElementById('addBtn').click()}
 document.querySelectorAll('.quick-add button').forEach(b=>{b.onclick=function(){
-  const n=parseInt(this.dataset.n),data=load(),td=today()
+  const n=parseInt(this.dataset.name||this.dataset.n),data=load(),td=today()
   data[td]=(data[td]||0)+n;save(data);renderAll()
+  this.style.transform='scale(0.95)';setTimeout(()=>this.style.transform='scale(1)',100)
 }})
 
-document.getElementById('queryBtn').onclick=()=>{
-  const m=parseInt(document.getElementById('monthSelect').value)
-  const y=parseInt(document.getElementById('yearSelect').value)
-  renderMonthChart(y,m)
-  renderYearChart(y)
-}
-
 let currentTab='today'
-document.getElementById('tabToday').onclick=()=>{currentTab='today';document.querySelectorAll('.bottom-bar button').forEach(b=>b.classList.remove('active'));document.getElementById('tabToday').classList.add('active');renderList('today')}
-document.getElementById('tabWeek').onclick=()=>{currentTab='week';document.querySelectorAll('.bottom-bar button').forEach(b=>b.classList.remove('active'));document.getElementById('tabWeek').classList.add('active');renderList('week')}
-document.getElementById('tabMonth').onclick=()=>{currentTab='month';document.querySelectorAll('.bottom-bar button').forEach(b=>b.classList.remove('active'));document.getElementById('tabMonth').classList.add('active');renderList('month')}
+function switchTab(tab){
+  currentTab=tab
+  document.querySelectorAll('.bottom-bar button').forEach(b=>b.classList.remove('active'))
+  document.getElementById('tab'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active')
+  renderList(tab)
+}
+document.getElementById('tabToday').onclick=()=>switchTab('today')
+document.getElementById('tabWeek').onclick=()=>switchTab('week')
+document.getElementById('tabMonth').onclick=()=>switchTab('month')
 
 document.getElementById('setGoalBtn').onclick=()=>{document.getElementById('goalInput').value=getGoal();document.getElementById('goalModal').classList.add('show')}
 document.getElementById('goalCancel').onclick=()=>document.getElementById('goalModal').classList.remove('show')
 document.getElementById('goalOk').onclick=()=>{const n=parseInt(document.getElementById('goalInput').value);if(n&&n>0){setGoal(n);document.getElementById('goalModal').classList.remove('show');renderAll()}}
 document.getElementById('goalModal').onclick=function(e){if(e.target===this)this.classList.remove('show')}
 
-initSelectors()
 renderAll()
 </script>
 </body>

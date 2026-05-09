@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<title>俯卧撑打卡</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f0f1a;color:#e0e0e0;min-height:100vh;padding-bottom:80px}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:20px;text-align:center;border-bottom:1px solid #333}
+.header h1{font-size:22px;color:#00d4aa;margin-bottom:4px}
+.header p{font-size:13px;color:#888}
+
+.today-card{margin:16px;padding:20px;background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:16px;text-align:center;border:1px solid #333}
+.today-card .count{font-size:56px;font-weight:bold;color:#00d4aa;line-height:1.2}
+.today-card .label{font-size:14px;color:#888;margin-bottom:12px}
+.today-card .goal-text{font-size:12px;color:#666;margin-top:4px}
+
+.input-area{display:flex;gap:10px;margin:16px;align-items:center}
+.input-area input{flex:1;padding:14px 16px;border-radius:12px;border:1px solid #333;background:#1a1a2e;color:#e0e0e0;font-size:18px;text-align:center;outline:none}
+.input-area input:focus{border-color:#00d4aa}
+.input-area button{padding:14px 24px;border-radius:12px;border:none;background:#00d4aa;color:#000;font-size:16px;font-weight:600;cursor:pointer;white-space:nowrap}
+.input-area button:active{transform:scale(0.95)}
+
+.quick-add{display:flex;gap:8px;margin:0 16px 16px}
+.quick-add button{flex:1;padding:10px;border-radius:10px;border:1px solid #333;background:#1a1a2e;color:#00d4aa;font-size:16px;font-weight:600;cursor:pointer}
+.quick-add button:active{background:#0f3460}
+
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:0 16px 16px}
+.stat-card{padding:14px;border-radius:12px;background:#1a1a2e;text-align:center;border:1px solid #333}
+.stat-card .num{font-size:22px;font-weight:bold;color:#00d4aa}
+.stat-card .lbl{font-size:11px;color:#888;margin-top:2px}
+
+.section-title{margin:16px 16px 8px;font-size:15px;color:#aaa;font-weight:600}
+
+.history{margin:0 16px}
+.day-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#1a1a2e;border-radius:10px;margin-bottom:6px;border:1px solid #222}
+.day-row .date{font-size:14px;color:#ccc}
+.day-row .val{font-size:16px;font-weight:bold;color:#00d4aa}
+.day-row .val.zero{color:#666}
+.day-row .del{color:#ff4444;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px}
+.day-row .del:active{background:#333}
+
+.empty{text-align:center;color:#555;padding:30px;font-size:14px}
+
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;border-top:1px solid #333;padding:12px 16px;display:flex;gap:8px}
+.bottom-bar button{flex:1;padding:10px;border-radius:10px;border:1px solid #333;background:#0f0f1a;color:#888;font-size:13px;cursor:pointer}
+.bottom-bar button.active{background:#00d4aa22;border-color:#00d4aa;color:#00d4aa}
+.bottom-bar button:active{transform:scale(0.95)}
+
+.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:100;justify-content:center;align-items:center}
+.modal.show{display:flex}
+.modal-box{background:#1a1a2e;border-radius:16px;padding:24px;width:88%;max-width:340px;border:1px solid #333}
+.modal-box h3{color:#00d4aa;margin-bottom:16px;font-size:16px}
+.modal-box input{width:100%;padding:12px;border-radius:10px;border:1px solid #333;background:#0f0f1a;color:#e0e0e0;font-size:16px;text-align:center;outline:none;margin-bottom:12px}
+.modal-box input:focus{border-color:#00d4aa}
+.modal-box .btns{display:flex;gap:10px}
+.modal-box .btns button{flex:1;padding:12px;border-radius:10px;border:none;font-size:15px;font-weight:600;cursor:pointer}
+.modal-box .btns .ok{background:#00d4aa;color:#000}
+.modal-box .btns .cancel{background:#333;color:#888}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>💪 俯卧撑打卡</h1>
+  <p id="todayLabel">今天</p>
+</div>
+
+<div class="today-card">
+  <div class="label">今日完成</div>
+  <div class="count" id="todayCount">0</div>
+  <div class="goal-text" id="goalText">每日目标: 50个</div>
+</div>
+
+<div class="input-area">
+  <input type="number" id="inputNum" placeholder="个数" min="1" max="999">
+  <button id="addBtn">+ 添加</button>
+</div>
+
+<div class="quick-add">
+  <button data-n="10">+10</button>
+  <button data-n="20">+20</button>
+  <button data-n="30">+30</button>
+  <button data-n="50">+50</button>
+</div>
+
+<div class="stats">
+  <div class="stat-card"><div class="num" id="weekTotal">0</div><div class="lbl">本周</div></div>
+  <div class="stat-card"><div class="num" id="monthTotal">0</div><div class="lbl">本月</div></div>
+  <div class="stat-card"><div class="num" id="avgDaily">0</div><div class="lbl">日均</div></div>
+</div>
+
+<div class="section-title">📋 打卡记录</div>
+<div class="history" id="historyList"></div>
+
+<div class="bottom-bar">
+  <button id="tabToday" class="active">📅 今日</button>
+  <button id="tabWeek">📊 本周</button>
+  <button id="tabMonth">📈 本月</button>
+  <button id="setGoalBtn">🎯 目标</button>
+</div>
+
+<!-- 目标设置弹窗 -->
+<div class="modal" id="goalModal">
+  <div class="modal-box">
+    <h3>🎯 设置每日目标</h3>
+    <input type="number" id="goalInput" placeholder="每日目标个数" min="1">
+    <div class="btns">
+      <button class="cancel" id="goalCancel">取消</button>
+      <button class="ok" id="goalOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'pushup_data';
+const GOAL_KEY = 'pushup_goal';
+const today = () => new Date().toISOString().slice(0,10);
+
+function load() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function save(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+function getGoal() {
+  return parseInt(localStorage.getItem(GOAL_KEY)) || 50;
+}
+function setGoal(n) {
+  localStorage.setItem(GOAL_KEY, n);
+}
+
+function getWeekRange() {
+  const d = new Date(); const day = d.getDay(); const diff = day === 0 ? 6 : day - 1;
+  const mon = new Date(d); mon.setDate(d.getDate() - diff);
+  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  return { start: mon.toISOString().slice(0,10), end: sun.toISOString().slice(0,10) };
+}
+
+function getMonthRange() {
+  const d = new Date();
+  const start = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-01';
+  const end = new Date(d.getFullYear(), d.getMonth()+1, 0).toISOString().slice(0,10);
+  return { start, end };
+}
+
+function sumInRange(data, start, end) {
+  let total = 0;
+  for (const [date, count] of Object.entries(data)) {
+    if (date >= start && date <= end) total += count;
+  }
+  return total;
+}
+
+function daysInRange(data, start, end) {
+  let days = 0;
+  for (const date of Object.keys(data)) {
+    if (date >= start && date <= end) days++;
+  }
+  return days || 1;
+}
+
+function render() {
+  const data = load();
+  const goal = getGoal();
+  const td = today();
+  const todayVal = data[td] || 0;
+
+  document.getElementById('todayCount').textContent = todayVal;
+  document.getElementById('goalText').textContent = `每日目标: ${goal}个` + (todayVal >= goal ? ' ✅' : '');
+
+  // 快速添加按钮的标签显示剩余
+  document.querySelectorAll('.quick-add button').forEach(b => {
+    const n = parseInt(b.dataset.n);
+    b.textContent = `+${n}`;
+  });
+
+  const weekR = getWeekRange();
+  const monthR = getMonthRange();
+  const weekTotal = sumInRange(data, weekR.start, weekR.end);
+  const monthTotal = sumInRange(data, monthR.start, monthR.end);
+  const daysPast = new Date().getDate();
+  const avgDaily = Math.round(monthTotal / daysPast);
+
+  document.getElementById('weekTotal').textContent = weekTotal;
+  document.getElementById('monthTotal').textContent = monthTotal;
+  document.getElementById('avgDaily').textContent = avgDaily;
+
+  // 历史列表 - 近14天倒序
+  const sorted = Object.entries(data).sort((a,b) => b[0].localeCompare(a[0]));
+  const recent = sorted.slice(0, 14);
+
+  const list = document.getElementById('historyList');
+  if (recent.length === 0) {
+    list.innerHTML = '<div class="empty">还没有记录，加油！💪</div>';
+    return;
+  }
+  list.innerHTML = recent.map(([date, count]) => {
+    const d = new Date(date);
+    const weekday = ['日','一','二','三','四','五','六'][d.getDay()];
+    const label = date === td ? '今天' : `${date.slice(5)} 周${weekday}`;
+    const cls = count === 0 ? 'zero' : '';
+    return `<div class="day-row">
+      <span class="date">${label}</span>
+      <span class="val ${cls}">${count}个</span>
+      <span class="del" data-date="${date}">✕</span>
+    </div>`;
+  }).join('');
+
+  // 删除
+  document.querySelectorAll('.del').forEach(el => {
+    el.onclick = function() {
+      const date = this.dataset.date;
+      const d = load();
+      delete d[date];
+      save(d);
+      render();
+    };
+  });
+}
+
+// 添加
+document.getElementById('addBtn').onclick = function() {
+  const input = document.getElementById('inputNum');
+  const n = parseInt(input.value);
+  if (!n || n < 1) { input.focus(); return; }
+  const data = load();
+  const td = today();
+  data[td] = (data[td] || 0) + n;
+  save(data);
+  input.value = '';
+  render();
+};
+
+document.getElementById('inputNum').onkeydown = function(e) {
+  if (e.key === 'Enter') document.getElementById('addBtn').click();
+};
+
+// 快速添加
+document.querySelectorAll('.quick-add button').forEach(b => {
+  b.onclick = function() {
+    const n = parseInt(this.dataset.n);
+    const data = load();
+    const td = today();
+    data[td] = (data[td] || 0) + n;
+    save(data);
+    render();
+    // 短暂反馈
+    const c = document.getElementById('todayCount');
+    c.style.transform = 'scale(1.2)';
+    setTimeout(() => c.style.transform = 'scale(1)', 150);
+  };
+});
+
+// 日历快速点击(补录)
+document.querySelectorAll('.day-row .date, .day-row .val').forEach(el => {
+  // 点击日期行补录
+});
+
+// 底部tab
+function setTab(tab) {
+  document.querySelectorAll('.bottom-bar button').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (btn) btn.classList.add('active');
+
+  // 按tab过滤历史显示
+  const data = load();
+  const sorted = Object.entries(data).sort((a,b) => b[0].localeCompare(a[0]));
+
+  let filtered;
+  if (tab === 'today') {
+    const td = today();
+    filtered = sorted.filter(([d]) => d === td);
+  } else if (tab === 'week') {
+    const r = getWeekRange();
+    filtered = sorted.filter(([d]) => d >= r.start && d <= r.end);
+  } else {
+    const r = getMonthRange();
+    filtered = sorted.filter(([d]) => d >= r.start && d <= r.end);
+  }
+
+  const list = document.getElementById('historyList');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">暂无记录</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(([date, count]) => {
+    const d = new Date(date);
+    const weekday = ['日','一','二','三','四','五','六'][d.getDay()];
+    const label = date === today() ? '今天' : `${date.slice(5)} 周${weekday}`;
+    return `<div class="day-row">
+      <span class="date">${label}</span>
+      <span class="val ${count===0?'zero':''}">${count}个</span>
+      <span class="del" data-date="${date}">✕</span>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.del').forEach(el => {
+    el.onclick = function() {
+      const date = this.dataset.date;
+      const d = load();
+      delete d[date];
+      save(d);
+      setTab(tab);
+    };
+  });
+}
+
+document.getElementById('tabToday').onclick = () => setTab('today');
+document.getElementById('tabWeek').onclick = () => setTab('week');
+document.getElementById('tabMonth').onclick = () => setTab('month');
+
+// 目标设置
+document.getElementById('setGoalBtn').onclick = () => {
+  document.getElementById('goalInput').value = getGoal();
+  document.getElementById('goalModal').classList.add('show');
+};
+document.getElementById('goalCancel').onclick = () => document.getElementById('goalModal').classList.remove('show');
+document.getElementById('goalOk').onclick = () => {
+  const n = parseInt(document.getElementById('goalInput').value);
+  if (n && n > 0) { setGoal(n); document.getElementById('goalModal').classList.remove('show'); render(); }
+};
+
+// 今日label
+const d = new Date();
+const wd = ['日','一','二','三','四','五','六'][d.getDay()];
+document.getElementById('todayLabel').textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 星期${wd}`;
+
+render();
+
+// 点击空白关闭弹窗
+document.getElementById('goalModal').onclick = function(e) {
+  if (e.target === this) this.classList.remove('show');
+};
+</script>
+</body>
+</html>
